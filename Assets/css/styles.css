@@ -343,16 +343,16 @@ img { max-width: 100%; }
   flex-wrap: nowrap;
   gap: 20px;
   padding: 80px clamp(36px, 3.5vw, 56px);
-  background: rgba(10, 10, 11, .55);
-  backdrop-filter: saturate(160%) blur(20px);
-  -webkit-backdrop-filter: saturate(160%) blur(20px);
+  background: rgba(255, 255, 255, .96);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
   border-radius: 18px;
-  border: 1px solid rgba(255,255,255,.12);
-  box-shadow: 0 8px 28px -8px rgba(0,0,0,.4);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,.18), 0 2px 6px -2px rgba(0,0,0,.06);
   transition: background var(--t-med), border-color var(--t-med);
 }
 
-/* Subtle gradient hairlines on top and bottom — Pomelo decorative detail */
+/* Subtle gradient hairlines on top and bottom */
 .header__inner::before,
 .header__inner::after {
   content: '';
@@ -360,14 +360,15 @@ img { max-width: 100%; }
   left: 12%; right: 12%;
   height: 1px;
   background:
-    linear-gradient(90deg, transparent 0%, rgba(238,27,36,.45) 30%, rgba(255,255,255,.5) 50%, rgba(238,27,36,.45) 70%, transparent 100%);
+    linear-gradient(90deg, transparent 0%, rgba(238,27,36,.4) 30%, rgba(0,0,0,.18) 50%, rgba(238,27,36,.4) 70%, transparent 100%);
   pointer-events: none;
 }
 .header__inner::before { top: -1px; }
 .header__inner::after  { bottom: -1px; }
 
 .header.is-scrolled .header__inner {
-  background: rgba(10, 10, 11, .72);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 16px 36px -8px rgba(0,0,0,.22), 0 4px 8px -2px rgba(0,0,0,.08);
 }
 
 .header__logo {
@@ -394,13 +395,13 @@ img { max-width: 100%; }
   border-radius: 999px;
   font-size: 14px;
   font-weight: 500;
-  color: rgba(255,255,255,.78);
+  color: var(--ink-700);
   white-space: nowrap;
   transition: color var(--t-fast), background var(--t-fast);
 }
 .header__nav a:hover {
-  background: rgba(255,255,255,.08);
-  color: #fff;
+  background: rgba(238,27,36,.06);
+  color: var(--red);
 }
 
 .header__cta {
@@ -414,17 +415,17 @@ img { max-width: 100%; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 14px;
-  color: rgba(255,255,255,.85);
+  color: var(--ink-800);
   padding: 8px 14px;
   border-radius: 999px;
   white-space: nowrap;
   transition: color var(--t-fast), background var(--t-fast);
 }
 .header__phone:hover {
-  color: #fff;
-  background: rgba(255,255,255,.06);
+  color: var(--red);
+  background: rgba(238,27,36,.04);
 }
 .header__phone svg {
   color: var(--red);
@@ -552,18 +553,19 @@ img { max-width: 100%; }
   50%      { transform: translateY(6%) rotate(var(--r, 12deg)); }
 }
 
-/* Large Schneider nobreak — front and center, overlapping the title from the top */
+/* Large Schneider nobreak — anchored to the right, behind content (form sits on top) */
 .hero__device-wrap {
   position: absolute;
   top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: clamp(300px, 36vw, 520px);
+  right: -3%;
+  transform: translateY(-50%);
+  width: clamp(260px, 24vw, 380px);
   aspect-ratio: 1 / 1.5;
-  z-index: 5;
+  z-index: 0;
   pointer-events: none;
   isolation: isolate;
-  filter: drop-shadow(0 40px 70px rgba(0,0,0,.8));
+  filter: drop-shadow(0 40px 70px rgba(0,0,0,.7));
+  opacity: .85;
 }
 .hero__device {
   width: 100%;
