@@ -2937,9 +2937,31 @@ img { max-width: 100%; }
   .panel--alt { grid-template-columns: 1fr; gap: 32px; }
   .panel--alt .panel__col--text { order: 1; }
   .panel--alt .panel__col--visual { order: 2; }
-  .panel--hero { padding: clamp(28px, 5vw, 40px); }
+  .panel--hero {
+    padding: clamp(24px, 5vw, 36px) clamp(20px, 4vw, 32px);
+    margin: 0;
+    text-align: center;
+  }
+  .panel--hero .panel__col--text {
+    align-items: center;
+    text-align: center;
+  }
+  .panel--hero .panel__title { max-width: 100%; }
+  .panel--hero p { margin-left: auto; margin-right: auto; max-width: 520px; }
+  .panel--hero .panel__bullets {
+    align-self: stretch;
+    text-align: left;
+  }
+  .panel--hero .panel__bullets li { text-align: left; }
+  .panel--hero .btn { align-self: center; margin-top: 8px; }
   .panel--hero .panel__col--visual:has(.device-stack) { margin: 0; }
-  .panel--hero .panel-photo--clean img { max-height: 380px; }
+  .panel--hero .panel-photo--clean { margin: 0 auto; width: 100%; max-width: 100%; }
+  .panel--hero .panel-photo--clean img {
+    max-height: 360px;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+  }
   .panel-photo,
   .panel--hero .panel-photo { max-width: 420px; margin: 0 auto; }
 
