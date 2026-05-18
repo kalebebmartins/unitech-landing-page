@@ -40,6 +40,9 @@ body.admin {
   -webkit-font-smoothing: antialiased;
 }
 
+/* The [hidden] attribute must always win over display:flex/grid */
+[hidden] { display: none !important; }
+
 /* -----------------------------------
    BUTTONS
 ----------------------------------- */
