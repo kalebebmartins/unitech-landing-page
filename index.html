@@ -40,7 +40,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="Assets/css/styles.css?v=35" />
+  <link rel="stylesheet" href="Assets/css/styles.css?v=36" />
 
   <!-- Schema.org -->
   <script type="application/ld+json">
@@ -161,6 +161,18 @@
     <section class="hero" id="hero">
       <div class="hero__grid-bg" aria-hidden="true"></div>
       <div class="hero__glow" aria-hidden="true"></div>
+      <div class="hero__beams" aria-hidden="true">
+        <div class="hero__beam hero__beam--1"></div>
+        <div class="hero__beam hero__beam--2"></div>
+        <div class="hero__beam hero__beam--3"></div>
+      </div>
+      <div class="hero__device-wrap" aria-hidden="true">
+        <div class="hero__device-glow"></div>
+        <img class="hero__device" src="Assets/Nobreaks APC/galaxy/galaxy 7000.png" alt="" loading="eager" />
+        <div class="hero__device-rings">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
 
       <div class="container hero__inner">
         <div class="hero__content reveal" data-reveal>
@@ -171,12 +183,12 @@
             na queda de energia.
           </h1>
           <p class="hero__sub" data-cms="hero_subtitle">
-            Manutenção preventiva e corretiva para nobreaks de <strong>todas as marcas</strong> — com plantão técnico <strong>24 horas</strong> e atendimento emergencial em até <strong>4 horas</strong>. A Unitech mantém sua energia de missão crítica funcionando 365 dias por ano. Você para de torcer para o equipamento aguentar.
+            Manutenção preventiva e corretiva para nobreaks de <strong>todas as marcas</strong> — com plantão técnico <strong>24 horas</strong> e atendimento emergencial em até <strong>4 horas</strong>. A Unitech mantém sua energia de missão crítica funcionando 365 dias por ano.
           </p>
 
           <div class="hero__ctas">
-            <a href="#form-hero" class="btn btn--primary btn--lg">Quero meu diagnóstico gratuito</a>
-            <a href="#contrato" class="btn btn--ghost btn--lg">Ver planos de manutenção</a>
+            <a href="#form-hero" class="btn btn--primary">Quero meu diagnóstico</a>
+            <a href="#contrato" class="btn btn--ghost">Ver planos de manutenção</a>
           </div>
 
           <div class="trust-row">
@@ -184,13 +196,13 @@
             <div class="trust-row__sep"></div>
             <div class="trust-row__item"><strong>+2.000</strong> clientes atendidos</div>
             <div class="trust-row__sep"></div>
-            <div class="trust-row__item"><strong>Premier Partner</strong> APC by Schneider Electric</div>
+            <div class="trust-row__item premier-badge"><strong>Premier Partner</strong> APC by Schneider Electric</div>
           </div>
         </div>
 
         <!-- HERO FORM -->
         <aside class="hero__form-wrap reveal" data-reveal="right" id="form-hero">
-          <form class="lead-form" novalidate data-form="hero">
+          <form class="lead-form lead-form--dark" novalidate data-form="hero">
             <div class="lead-form__head">
               <span class="lead-form__badge">Diagnóstico gratuito</span>
               <h2 class="lead-form__title">Receba um diagnóstico do seu parque de nobreaks</h2>
@@ -215,13 +227,15 @@
               <input id="h-email" name="email" type="email" required autocomplete="email" />
             </div>
             <div class="lead-form__group">
-              <label for="h-qty">Quantos nobreaks você tem?*</label>
-              <select id="h-qty" name="qty" required>
+              <label for="h-needs">Qual a sua necessidade hoje?*</label>
+              <select id="h-needs" name="needs" required>
                 <option value="">Selecione</option>
-                <option value="1">1</option>
-                <option value="2-5">2 a 5</option>
-                <option value="6-15">6 a 15</option>
-                <option value="16+">16 ou mais</option>
+                <option value="contrato">Contrato de manutenção</option>
+                <option value="corretiva">Manutenção corretiva</option>
+                <option value="preventiva">Manutenção preventiva</option>
+                <option value="compra">Comprar nobreak</option>
+                <option value="locacao">Locação de nobreaks</option>
+                <option value="outros">Outros</option>
               </select>
             </div>
             <div class="lead-form__group lead-form__check">
@@ -979,7 +993,10 @@
 
         <aside class="cta-final__form-wrap reveal" data-reveal="right">
           <form class="lead-form lead-form--dark" novalidate data-form="footer">
-            <h3 class="lead-form__title">Não espere a próxima queda de energia para descobrir se o seu nobreak aguenta.</h3>
+            <div class="lead-form__head">
+              <span class="lead-form__badge">Diagnóstico gratuito</span>
+              <h2 class="lead-form__title">Receba um diagnóstico do seu parque de nobreaks</h2>
+            </div>
 
             <div class="lead-form__group">
               <label for="f-name">Nome completo*</label>
@@ -1000,18 +1017,16 @@
               <input id="f-email" name="email" type="email" required autocomplete="email" />
             </div>
             <div class="lead-form__group">
-              <label for="f-qty">Quantos nobreaks você tem?*</label>
-              <select id="f-qty" name="qty" required>
+              <label for="f-needs">Qual a sua necessidade hoje?*</label>
+              <select id="f-needs" name="needs" required>
                 <option value="">Selecione</option>
-                <option value="1">1</option>
-                <option value="2-5">2 a 5</option>
-                <option value="6-15">6 a 15</option>
-                <option value="16+">16 ou mais</option>
+                <option value="contrato">Contrato de manutenção</option>
+                <option value="corretiva">Manutenção corretiva</option>
+                <option value="preventiva">Manutenção preventiva</option>
+                <option value="compra">Comprar nobreak</option>
+                <option value="locacao">Locação de nobreaks</option>
+                <option value="outros">Outros</option>
               </select>
-            </div>
-            <div class="lead-form__group">
-              <label for="f-help">Como podemos ajudar? (opcional)</label>
-              <textarea id="f-help" name="help" rows="2"></textarea>
             </div>
             <div class="lead-form__group lead-form__check">
               <input id="f-lgpd" name="lgpd" type="checkbox" required />

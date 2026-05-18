@@ -232,6 +232,10 @@
     els.leadsCount.textContent = leads.length;
     els.leadsCount.hidden = false;
 
+    const needsLabel = {
+      contrato: 'Contrato', corretiva: 'Corretiva', preventiva: 'Preventiva',
+      compra: 'Compra', locacao: 'Locação', outros: 'Outros'
+    };
     const rows = leads.map(l => `
       <tr data-id="${escapeHTML(l.id)}">
         <td>${fmtDate(l.ts)}</td>
@@ -239,7 +243,7 @@
         <td>${escapeHTML(l.company)}</td>
         <td><a href="mailto:${escapeHTML(l.email)}">${escapeHTML(l.email)}</a></td>
         <td>${escapeHTML(l.phone)}</td>
-        <td>${escapeHTML(l.qty)}</td>
+        <td>${escapeHTML(needsLabel[l.needs] || l.needs || l.qty || '')}</td>
         <td>${escapeHTML(l.source)}</td>
         <td><button class="btn btn--danger" data-action="del-lead" data-id="${escapeHTML(l.id)}">Excluir</button></td>
       </tr>
@@ -265,9 +269,9 @@
 
   els.leadsExport.addEventListener('click', () => {
     if (!leadsCache.length) { toast('Sem leads pra exportar', true); return; }
-    const headers = ['data', 'nome', 'empresa', 'email', 'telefone', 'quantidade', 'marcas', 'mensagem', 'origem'];
+    const headers = ['data', 'nome', 'empresa', 'email', 'telefone', 'necessidade', 'origem'];
     const rows = leadsCache.map(l => [
-      new Date(l.ts).toISOString(), l.name, l.company, l.email, l.phone, l.qty, l.brands || '', l.help || '', l.source
+      new Date(l.ts).toISOString(), l.name, l.company, l.email, l.phone, l.needs || l.qty || '', l.source
     ]);
     const csv = [headers, ...rows].map(r =>
       r.map(c => `"${String(c || '').replace(/"/g, '""')}"`).join(',')

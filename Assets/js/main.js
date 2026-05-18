@@ -179,8 +179,7 @@
           company: fd.get('company') || '',
           email:   fd.get('email')   || '',
           phone:   fd.get('phone')   || '',
-          qty:     fd.get('qty')     || '',
-          help:    fd.get('help')    || '',
+          needs:   fd.get('needs')   || '',
           source:  form.dataset.form || 'unknown',
           utms:    Object.fromEntries(
             ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']
