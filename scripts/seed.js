@@ -1,25 +1,19 @@
 #!/usr/bin/env node
 /**
  * Seed script — creates the first admin user.
+ *
  * Usage:
- *   1) Make sure .env has SESSION_SECRET + Vercel KV creds (run `vercel env pull`)
- *   2) Run: node scripts/seed.js <username> <password>
+ *   1) Make sure you ran `vercel env pull .env.development.local`
+ *   2) Run with Node's native --env-file flag:
+ *        node --env-file=.env.development.local scripts/seed.js <username> <password>
  */
 import { kv } from '@vercel/kv';
 import bcrypt from 'bcryptjs';
-import { config as loadEnv } from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-loadEnv({ path: resolve(__dirname, '../.env.development.local') });
-loadEnv({ path: resolve(__dirname, '../.env') });
 
 const [, , usernameArg, passwordArg] = process.argv;
 
 if (!usernameArg || !passwordArg) {
-  console.error('Usage: node scripts/seed.js <username> <password>');
+  console.error('Usage: node --env-file=.env.development.local scripts/seed.js <username> <password>');
   process.exit(1);
 }
 
@@ -32,6 +26,11 @@ if (!/^[a-z0-9._-]{3,40}$/.test(username)) {
 }
 if (password.length < 8) {
   console.error('Password must be at least 8 characters.');
+  process.exit(1);
+}
+
+if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
+  console.error('Missing Vercel KV env vars. Did you run `vercel env pull .env.development.local` and pass --env-file=?');
   process.exit(1);
 }
 
@@ -50,10 +49,9 @@ if (password.length < 8) {
     });
     await kv.sadd('users:list', username);
     console.log(`✓ Admin user "${username}" created.`);
-    console.log(`  Login at: https://your-domain.vercel.app/admin/`);
+    console.log(`  Login at: https://unitech-landing-page-eta.vercel.app/admin/`);
   } catch (e) {
     console.error('Seed failed:', e.message);
-    console.error('Make sure Vercel KV env vars and SESSION_SECRET are set.');
     process.exit(3);
   }
 })();

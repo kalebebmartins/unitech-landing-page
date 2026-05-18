@@ -114,18 +114,24 @@
     const btn = els.loginForm.querySelector('button[type="submit"]');
     btn.disabled = true;
     btn.textContent = 'Entrando…';
+    console.log('[admin] login submit', { user: fd.get('username') });
     try {
       const { user } = await api('/api/auth/login', {
         method: 'POST',
         body: { username: fd.get('username'), password: fd.get('password') }
       });
+      console.log('[admin] login ok', user);
       me = user;
       els.loginForm.reset();
       await enterDashboard();
     } catch (e) {
-      els.loginError.textContent = e.status === 401
+      console.error('[admin] login failed', e);
+      const msg = e.status === 401
         ? 'Usuário ou senha inválidos.'
-        : 'Não foi possível entrar. Tente novamente.';
+        : e.status
+          ? `Erro ${e.status}: ${e.message || 'request_failed'}`
+          : `Erro de rede: ${e.message || 'verifique sua conexão'}`;
+      els.loginError.textContent = msg;
       els.loginError.hidden = false;
     } finally {
       btn.disabled = false;
