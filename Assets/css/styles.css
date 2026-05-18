@@ -74,12 +74,9 @@ html, body {
   font-family: var(--font-body);
   font-size: 16px;
   line-height: 1.55;
-  overflow-x: hidden;
-  width: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-html { overflow-x: hidden; }
 body { position: relative; }
 body.no-scroll { overflow: hidden; }
 
@@ -101,7 +98,6 @@ body.no-scroll { overflow: hidden; }
 
 main, section, .container, .stack-cards, .panel--card { max-width: 100%; }
 section { width: 100%; }
-main { overflow-x: clip; }
 img { max-width: 100%; }
 
 /* Prevent grid/flex blowouts: children can shrink below their content's min-width */
