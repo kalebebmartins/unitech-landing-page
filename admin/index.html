@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#EE1B24" />
+  <title>Admin — Unitech</title>
+  <link rel="icon" type="image/png" href="/Assets/Logo/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body class="admin">
+
+  <!-- LOGIN SCREEN -->
+  <main class="login" id="loginScreen" hidden>
+    <form class="login__card" id="loginForm" novalidate>
+      <img src="/Assets/Logo/logo.png" alt="Unitech" class="login__logo" />
+      <h1>Painel administrativo</h1>
+      <p class="login__sub">Acesso restrito a desenvolvedores autorizados.</p>
+      <div class="field">
+        <label for="login-user">Usuário</label>
+        <input id="login-user" name="username" type="text" required autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label for="login-pass">Senha</label>
+        <input id="login-pass" name="password" type="password" required autocomplete="current-password" />
+      </div>
+      <p class="login__error" id="loginError" hidden></p>
+      <button class="btn btn--primary btn--block" type="submit">Entrar</button>
+    </form>
+  </main>
+
+  <!-- DASHBOARD -->
+  <div class="dashboard" id="dashboard" hidden>
+    <aside class="sidebar">
+      <a href="/" class="sidebar__brand" target="_blank" rel="noopener">
+        <img src="/Assets/Logo/logo.png" alt="Unitech" />
+        <span>Admin</span>
+      </a>
+      <nav class="sidebar__nav">
+        <button class="nav-btn is-active" data-tab="lp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>
+          Landing page
+        </button>
+        <button class="nav-btn" data-tab="content">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Textos da LP
+        </button>
+        <button class="nav-btn" data-tab="scripts">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Head & Footer
+        </button>
+        <button class="nav-btn" data-tab="leads">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Leads
+          <span class="badge" id="leadsCount" hidden>0</span>
+        </button>
+        <button class="nav-btn" data-tab="users">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Usuários
+        </button>
+      </nav>
+      <div class="sidebar__bottom">
+        <div class="sidebar__user">
+          <strong id="meName">—</strong>
+          <span id="meRole">admin</span>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Sair</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <!-- TAB: LP preview -->
+      <section class="tab is-active" data-panel="lp">
+        <header class="tab__head">
+          <h2>Landing page</h2>
+          <div class="tab__actions">
+            <a href="/" class="btn btn--ghost" target="_blank" rel="noopener">Abrir em nova aba</a>
+          </div>
+        </header>
+        <p class="tab__hint">Preview ao vivo da página pública. Tudo que aparece aqui é o que o cliente vê em produção.</p>
+        <div class="preview">
+          <iframe src="/" title="Landing Page Preview" loading="lazy"></iframe>
+        </div>
+      </section>
+
+      <!-- TAB: Textos da LP -->
+      <section class="tab" data-panel="content">
+        <header class="tab__head">
+          <h2>Textos da LP</h2>
+          <div class="tab__actions">
+            <button class="btn btn--primary" id="contentSave">Salvar alterações</button>
+          </div>
+        </header>
+        <p class="tab__hint">Edite os textos chave da LP. As mudanças entram no ar instantaneamente — sem precisar fazer deploy.</p>
+        <form class="content-form" id="contentForm">
+          <fieldset>
+            <legend>Hero</legend>
+            <label>
+              <span>Subtítulo (parágrafo abaixo do título)</span>
+              <textarea name="hero_subtitle" rows="3" maxlength="500"></textarea>
+            </label>
+          </fieldset>
+          <fieldset>
+            <legend>Contato</legend>
+            <label>
+              <span>Telefone (formato livre)</span>
+              <input type="text" name="phone" maxlength="40" placeholder="11 3567-3410" />
+            </label>
+            <label>
+              <span>WhatsApp (somente números)</span>
+              <input type="text" name="whatsapp" maxlength="20" placeholder="551135673410" />
+            </label>
+            <label>
+              <span>Endereço</span>
+              <input type="text" name="address" maxlength="160" placeholder="R. Cipriano Barata, 3009 — Ipiranga, São Paulo / SP" />
+            </label>
+          </fieldset>
+          <fieldset>
+            <legend>Plantão 24h</legend>
+            <label>
+              <span>Tempo de resposta emergencial (horas)</span>
+              <input type="text" name="emergency_hours" maxlength="10" placeholder="4" />
+            </label>
+          </fieldset>
+        </form>
+      </section>
+
+      <!-- TAB: Scripts head/footer -->
+      <section class="tab" data-panel="scripts">
+        <header class="tab__head">
+          <h2>Scripts no Head & Footer</h2>
+          <div class="tab__actions">
+            <button class="btn btn--primary" id="scriptsSave">Salvar scripts</button>
+          </div>
+        </header>
+        <p class="tab__hint">
+          Adicione códigos de tracking, pixels, Google Tag Manager, schema, etc. Os scripts são injetados <strong>server-side</strong>, antes do HTML chegar ao usuário (não atrapalha SEO, não tem flash).
+        </p>
+        <div class="code-pair">
+          <label>
+            <span>HEAD <small>— injetado antes do <code>&lt;/head&gt;</code></small></span>
+            <textarea id="scriptsHead" rows="14" spellcheck="false" placeholder="<!-- Google Tag Manager -->&#10;<script>(function(w,d,s,l,i)...)</script>"></textarea>
+          </label>
+          <label>
+            <span>FOOTER <small>— injetado antes do <code>&lt;/body&gt;</code></small></span>
+            <textarea id="scriptsFooter" rows="14" spellcheck="false" placeholder="<!-- Meta Pixel -->&#10;<script>!function(f,b,e,v,n,t,s)...</script>"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <!-- TAB: Leads -->
+      <section class="tab" data-panel="leads">
+        <header class="tab__head">
+          <h2>Leads</h2>
+          <div class="tab__actions">
+            <button class="btn btn--ghost" id="leadsRefresh">Atualizar</button>
+            <button class="btn btn--ghost" id="leadsExport">Exportar CSV</button>
+          </div>
+        </header>
+        <p class="tab__hint">Solicitações recebidas pelos formulários da LP. Os 200 leads mais recentes aparecem aqui.</p>
+        <div class="leads-table-wrap">
+          <table class="leads-table" id="leadsTable">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Nome</th>
+                <th>Empresa</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Qtd</th>
+                <th>Origem</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <p class="empty-state" id="leadsEmpty" hidden>Nenhum lead recebido ainda.</p>
+        </div>
+      </section>
+
+      <!-- TAB: Users -->
+      <section class="tab" data-panel="users">
+        <header class="tab__head">
+          <h2>Desenvolvedores</h2>
+          <div class="tab__actions">
+            <button class="btn btn--primary" id="userAddBtn">+ Adicionar dev</button>
+          </div>
+        </header>
+        <p class="tab__hint">Usuários com acesso ao painel. Senhas são salvas com bcrypt (irrecuperáveis — só dá pra resetar criando outra).</p>
+        <ul class="users-list" id="usersList"></ul>
+
+        <!-- Add user dialog (inline form) -->
+        <form class="user-add" id="userAddForm" hidden>
+          <h3>Novo usuário</h3>
+          <label>
+            <span>Usuário</span>
+            <input type="text" name="username" required minlength="3" maxlength="40" pattern="[a-zA-Z0-9._-]+" autocomplete="off" />
+          </label>
+          <label>
+            <span>Senha (mínimo 8 caracteres)</span>
+            <input type="password" name="password" required minlength="8" autocomplete="new-password" />
+          </label>
+          <div class="user-add__actions">
+            <button type="button" class="btn btn--ghost" id="userAddCancel">Cancelar</button>
+            <button type="submit" class="btn btn--primary">Criar</button>
+          </div>
+        </form>
+
+        <hr />
+        <h3 class="users-subhead">Alterar minha senha</h3>
+        <form class="user-pwd" id="myPwdForm">
+          <label>
+            <span>Nova senha (mínimo 8 caracteres)</span>
+            <input type="password" name="password" required minlength="8" autocomplete="new-password" />
+          </label>
+          <button class="btn btn--ghost" type="submit">Atualizar senha</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="/admin/admin.js" defer></script>
+</body>
+</html>

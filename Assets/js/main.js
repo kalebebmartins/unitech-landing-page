@@ -171,6 +171,31 @@
         }
       } catch (_) {}
 
+      // Persist lead to admin (best-effort; never block UX)
+      try {
+        const fd = new FormData(form);
+        const payload = {
+          name:    fd.get('name')    || '',
+          company: fd.get('company') || '',
+          email:   fd.get('email')   || '',
+          phone:   fd.get('phone')   || '',
+          qty:     fd.get('qty')     || '',
+          help:    fd.get('help')    || '',
+          source:  form.dataset.form || 'unknown',
+          utms:    Object.fromEntries(
+            ['utm_source','utm_medium','utm_campaign','utm_term','utm_content']
+              .map(k => [k, new URLSearchParams(location.search).get(k) || ''])
+              .filter(([,v]) => v)
+          )
+        };
+        fetch('/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          keepalive: true
+        }).catch(() => {});
+      } catch (_) {}
+
       // UI feedback
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalHTML = submitBtn.innerHTML;

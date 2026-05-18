@@ -26,3 +26,8 @@ build/
 .env.local
 .env.*.local
 .vercel
+
+# Node
+node_modules/
+.npm
+.yarn

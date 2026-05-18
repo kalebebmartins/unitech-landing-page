@@ -1,0 +1,19 @@
+{
+  "name": "unitech-landing-page",
+  "version": "1.0.0",
+  "description": "Unitech Soluções em Energia — landing page + admin",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed": "node scripts/seed.js",
+    "user:add": "node scripts/user-add.js"
+  },
+  "dependencies": {
+    "@vercel/kv": "^3.0.0",
+    "bcryptjs": "^2.4.3",
+    "jose": "^5.9.6"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}
