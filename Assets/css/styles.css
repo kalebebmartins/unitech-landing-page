@@ -2912,8 +2912,11 @@ img { max-width: 100%; }
     font-size: 12px !important;
   }
 
-  .cred__inner { grid-template-columns: 1fr; gap: 32px; text-align: left; }
-  .cred__seal { justify-content: flex-start; }
+  .cred__inner { grid-template-columns: 1fr; gap: 28px; text-align: center; }
+  .cred__text { display: flex; flex-direction: column; align-items: center; }
+  .cred .section-title { max-width: 100%; }
+  .cred .section-body { margin-left: auto; margin-right: auto; max-width: 520px; }
+  .cred__seal { justify-content: center; }
   .cred__seal img { max-width: 220px; }
 
   .invisible-cost { min-height: clamp(560px, 100vw, 720px); padding: 56px 0; }
