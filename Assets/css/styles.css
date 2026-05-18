@@ -554,18 +554,18 @@ img { max-width: 100%; }
   50%      { transform: translateY(6%) rotate(var(--r, 12deg)); }
 }
 
-/* Large Schneider nobreak — anchored bottom-center, between text and form */
+/* Large Schneider nobreak — front and center, overlapping the title from the top */
 .hero__device-wrap {
   position: absolute;
-  bottom: -8%;
+  top: 50%;
   left: 50%;
-  transform: translateX(-58%);
-  width: clamp(280px, 32vw, 460px);
-  aspect-ratio: 1 / 1.45;
-  z-index: 0;
+  transform: translate(-50%, -50%);
+  width: clamp(300px, 36vw, 520px);
+  aspect-ratio: 1 / 1.5;
+  z-index: 5;
   pointer-events: none;
   isolation: isolate;
-  filter: drop-shadow(0 40px 60px rgba(0,0,0,.7));
+  filter: drop-shadow(0 40px 70px rgba(0,0,0,.8));
 }
 .hero__device {
   width: 100%;
