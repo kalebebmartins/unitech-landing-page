@@ -104,6 +104,20 @@ section { width: 100%; }
 main { overflow-x: clip; }
 img { max-width: 100%; }
 
+/* Prevent grid/flex blowouts: children can shrink below their content's min-width */
+.panel, .panel--alt, .panel--hero, .panel--card,
+.hero__inner, .cred__inner, .invisible-cost__layout, .showcase__stage,
+.cta-final__grid, .ba-grid, .deliv-grid, .numbers-grid, .how-grid, .cases-grid,
+.footer__grid, .lead-form__row {
+  min-width: 0;
+}
+.panel > *, .panel--card > *, .hero__inner > *, .panel--hero > * { min-width: 0; }
+.panel__bullets li, .ba-list li, .risk-list li, .faq-item summary,
+.showcase__features li, .showcase__thumb span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 /* -----------------------------------
    2. TYPOGRAPHY
 ----------------------------------- */
@@ -2938,26 +2952,57 @@ img { max-width: 100%; }
   .panel--alt .panel__col--text { order: 1; }
   .panel--alt .panel__col--visual { order: 2; }
   .panel--hero {
-    padding: clamp(24px, 5vw, 36px) clamp(20px, 4vw, 32px);
+    padding: 24px 18px;
     margin: 0;
     text-align: center;
+    border-radius: 18px;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    box-sizing: border-box;
   }
   .panel--hero .panel__col--text {
     align-items: center;
     text-align: center;
+    min-width: 0;
+    width: 100%;
   }
-  .panel--hero .panel__title { max-width: 100%; }
-  .panel--hero p { margin-left: auto; margin-right: auto; max-width: 520px; }
+  .panel--hero .panel__title {
+    max-width: 100%;
+    font-size: clamp(22px, 6.2vw, 28px);
+    line-height: 1.18;
+  }
+  .panel--hero p {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 520px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
   .panel--hero .panel__bullets {
     align-self: stretch;
     text-align: left;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
   }
-  .panel--hero .panel__bullets li { text-align: left; }
-  .panel--hero .btn { align-self: center; margin-top: 8px; }
+  .panel--hero .panel__bullets li {
+    text-align: left;
+    font-size: 13.5px;
+    padding: 9px 12px 9px 32px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .panel--hero .btn {
+    align-self: center;
+    margin-top: 8px;
+    padding: 12px 18px !important;
+    font-size: 12px !important;
+    width: auto !important;
+  }
+  .panel--hero .panel__col--visual { min-width: 0; width: 100%; }
   .panel--hero .panel__col--visual:has(.device-stack) { margin: 0; }
   .panel--hero .panel-photo--clean { margin: 0 auto; width: 100%; max-width: 100%; }
   .panel--hero .panel-photo--clean img {
-    max-height: 360px;
+    max-height: 320px;
     max-width: 100%;
     width: auto;
     height: auto;
