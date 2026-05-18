@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s \"https://unitech-landing-page-eta.vercel.app/Assets/css/styles.css?v=29\")",
+      "Bash(curl -s -o /dev/null -w \"Status: %{http_code} | Size: %{size_download}\\\\n\" \"https://unitech-landing-page-eta.vercel.app/Assets/css/styles.css?v=29\")"
+    ]
+  }
+}
