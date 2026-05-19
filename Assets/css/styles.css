@@ -494,9 +494,9 @@ img { max-width: 100%; }
     radial-gradient(ellipse at 70% -10%, rgba(238,27,36,.28), transparent 55%),
     radial-gradient(ellipse at -10% 70%, rgba(238,27,36,.16), transparent 45%),
     linear-gradient(180deg, #000 0%, #0a0a0b 100%);
-  padding: clamp(40px, 5.5vw, 64px) 0 clamp(40px, 5vw, 60px);
+  padding: clamp(24px, 3vw, 40px) 0 clamp(24px, 3vw, 40px);
   isolation: isolate;
-  min-height: 86vh;
+  min-height: clamp(540px, 68vh, 760px);
   display: flex;
   align-items: center;
 }
