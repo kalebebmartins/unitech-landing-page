@@ -338,7 +338,7 @@ img { max-width: 100%; }
   justify-content: space-between;
   flex-wrap: nowrap;
   gap: 20px;
-  padding: 80px clamp(36px, 3.5vw, 56px);
+  padding: 44px clamp(28px, 3vw, 48px);
   background: rgba(255, 255, 255, .96);
   backdrop-filter: saturate(160%) blur(14px);
   -webkit-backdrop-filter: saturate(160%) blur(14px);
@@ -494,9 +494,9 @@ img { max-width: 100%; }
     radial-gradient(ellipse at 70% -10%, rgba(238,27,36,.28), transparent 55%),
     radial-gradient(ellipse at -10% 70%, rgba(238,27,36,.16), transparent 45%),
     linear-gradient(180deg, #000 0%, #0a0a0b 100%);
-  padding: clamp(20px, 2.5vw, 32px) 0 clamp(20px, 2.5vw, 32px);
+  padding: clamp(16px, 2vw, 24px) 0 clamp(16px, 2vw, 24px);
   isolation: isolate;
-  min-height: clamp(480px, 60vh, 680px);
+  min-height: clamp(440px, 56vh, 620px);
   display: flex;
   align-items: center;
 }
