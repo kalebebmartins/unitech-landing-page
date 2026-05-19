@@ -549,50 +549,48 @@ img { max-width: 100%; }
   50%      { transform: translateY(6%) rotate(var(--r, 12deg)); }
 }
 
-/* Large Schneider nobreak — anchored to the right, behind content (form sits on top) */
+/* Schneider nobreak — sits above the title, inline with content flow */
 .hero__device-wrap {
-  position: absolute;
-  top: 50%;
-  right: -3%;
-  transform: translateY(-50%);
-  width: clamp(260px, 24vw, 380px);
-  aspect-ratio: 1 / 1.5;
-  z-index: 0;
-  pointer-events: none;
+  position: relative;
+  width: 100%;
+  max-width: 220px;
+  aspect-ratio: 1 / 1.4;
+  margin: 0 0 18px;
+  z-index: 2;
   isolation: isolate;
-  filter: drop-shadow(0 40px 70px rgba(0,0,0,.7));
-  opacity: .85;
+  filter: drop-shadow(0 24px 36px rgba(0,0,0,.55));
 }
 .hero__device {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: bottom;
+  object-position: center;
   position: relative;
   z-index: 3;
-  filter: drop-shadow(0 0 40px rgba(238,27,36,.18));
-  animation: heroDeviceFloat 9s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(238,27,36,.22));
+  animation: heroDeviceFloat 7s ease-in-out infinite;
 }
 .hero__device-glow {
   position: absolute;
-  inset: 15% 5%;
-  background: radial-gradient(circle, rgba(238,27,36,.55), transparent 60%);
-  filter: blur(60px);
+  inset: 10%;
+  background: radial-gradient(circle, rgba(238,27,36,.5), transparent 60%);
+  filter: blur(40px);
   z-index: 1;
-  animation: pulseGlow 6s ease-in-out infinite;
+  animation: pulseGlow 5s ease-in-out infinite;
 }
 .hero__device-rings {
   position: absolute;
-  bottom: 6%;
+  bottom: 8%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 2;
+  pointer-events: none;
 }
 .hero__device-rings span {
   position: absolute;
   bottom: 0; left: 50%;
-  width: 240px; height: 240px;
-  margin-left: -120px;
+  width: 140px; height: 140px;
+  margin-left: -70px;
   border: 1px solid rgba(238,27,36,.32);
   border-radius: 50%;
   opacity: 0;
@@ -2922,7 +2920,7 @@ img { max-width: 100%; }
     overflow: hidden;
   }
   .hero__inner { grid-template-columns: 1fr; gap: 32px; width: 100%; max-width: 100%; }
-  .hero__device-wrap { display: none; }
+  .hero__device-wrap { max-width: 160px; margin: 0 auto 14px; }
 
   /* Hero text — centered, contained */
   .hero__content {
