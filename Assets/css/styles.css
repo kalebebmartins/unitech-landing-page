@@ -2922,7 +2922,11 @@ img { max-width: 100%; }
 /* ≤980px — Header collapses to mobile */
 @media (max-width: 980px) {
   .header { padding-top: 10px; }
-  .header__inner { padding: 26px clamp(18px, 3vw, 28px) !important; }
+  .header__inner {
+    padding: 26px clamp(40px, 10vw, 80px) !important;
+    justify-content: space-between;
+    gap: clamp(24px, 6vw, 56px);
+  }
   .header__nav { display: none; }
   .header__menu-btn { display: flex; }
   .header__phone span { display: none; }
@@ -3190,7 +3194,11 @@ img { max-width: 100%; }
   .announcement__group { gap: 18px; padding: 0 18px; }
 
   .header { padding-top: 8px; }
-  .header__inner { padding: 18px 16px !important; border-radius: 14px; }
+  .header__inner {
+    padding: 18px clamp(36px, 12vw, 64px) !important;
+    border-radius: 14px;
+    justify-content: space-between;
+  }
   .header__logo img { height: 28px; }
   .header__phone { padding: 6px 10px; }
   .header__phone svg { display: none; }
