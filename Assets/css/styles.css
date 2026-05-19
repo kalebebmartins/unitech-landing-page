@@ -564,7 +564,7 @@ img { max-width: 100%; }
 .hero__device-wrap {
   position: relative;
   flex: 0 0 auto;
-  width: clamp(140px, 16vw, 200px);
+  width: clamp(120px, 13vw, 170px);
   aspect-ratio: 1 / 1.35;
   z-index: 2;
   isolation: isolate;
@@ -632,12 +632,12 @@ img { max-width: 100%; }
 .hero__title {
   font-family: var(--font-heading);
   font-weight: 500;
-  font-size: clamp(26px, 3.6vw, 44px);
-  line-height: 1.08;
-  letter-spacing: -0.025em;
+  font-size: clamp(22px, 2.8vw, 36px);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
   color: #fff;
   margin-bottom: 18px;
-  text-wrap: balance;
+  text-wrap: initial;
 }
 .hero__title strong {
   font-weight: 800;
