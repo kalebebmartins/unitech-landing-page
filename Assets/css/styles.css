@@ -2800,17 +2800,25 @@ img { max-width: 100%; }
   color: rgba(255,255,255,.45);
 }
 
-/* "Desenvolvido por 28K Group" credit */
+/* "Desenvolvido por 28K Group" — full-width signature row, centered */
+.footer__signature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 16px;
+  background: rgba(0,0,0,.6);
+  border-top: 1px solid rgba(255,255,255,.06);
+}
 .footer__credit {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
+  gap: 12px;
+  padding: 8px 16px;
   border-radius: 999px;
   color: rgba(255,255,255,.55);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 500;
-  letter-spacing: .02em;
+  letter-spacing: .04em;
   transition: background var(--t-fast), color var(--t-fast), transform var(--t-fast);
 }
 .footer__credit:hover {
@@ -2819,12 +2827,12 @@ img { max-width: 100%; }
   transform: translateY(-2px);
 }
 .footer__credit img {
-  height: 26px;
+  height: 30px;
   width: auto;
   transition: filter var(--t-fast);
 }
 .footer__credit:hover img {
-  filter: drop-shadow(0 4px 8px rgba(238,99,28,.4));
+  filter: drop-shadow(0 4px 12px rgba(238,99,28,.45));
 }
 
 /* -----------------------------------
