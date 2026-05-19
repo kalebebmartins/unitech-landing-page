@@ -564,7 +564,7 @@ img { max-width: 100%; }
 .hero__device-wrap {
   position: relative;
   flex: 0 0 auto;
-  width: clamp(110px, 11vw, 145px);
+  width: clamp(160px, 17vw, 230px);
   aspect-ratio: 1 / 1.4;
   z-index: 2;
   isolation: isolate;
@@ -2931,7 +2931,7 @@ img { max-width: 100%; }
   }
   .hero__inner { grid-template-columns: 1fr; gap: 32px; width: 100%; max-width: 100%; }
   .hero__heading { flex-direction: column; align-items: center; gap: 14px; }
-  .hero__device-wrap { width: 140px; max-width: 140px; }
+  .hero__device-wrap { width: 170px; max-width: 170px; }
 
   /* Hero text — centered, contained */
   .hero__content {
