@@ -201,12 +201,10 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span>Enviando…</span>';
 
+      // Redirect to thank-you page (give 350ms for keepalive fetch to flush)
       setTimeout(() => {
-        form.reset();
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = originalHTML;
-        openModal();
-      }, 700);
+        window.location.assign('/obrigado');
+      }, 350);
     });
 
     // Clear error on input
