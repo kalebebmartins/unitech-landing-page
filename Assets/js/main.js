@@ -252,7 +252,7 @@
   });
 
   // ---------- 11. BACKGROUND VIDEO — play once on enter, freeze on last frame ----------
-  document.querySelectorAll('.invisible-cost__video-bg').forEach(video => {
+  document.querySelectorAll('.invisible-cost__video, .invisible-cost__video-bg').forEach(video => {
     let hasStarted = false;
     let isFrozen   = false;
     const FREEZE_BEFORE_END = 0.08; // seconds before the actual end to pause

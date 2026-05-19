@@ -40,7 +40,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <link rel="stylesheet" href="Assets/css/styles.css?v=50" />
+  <link rel="stylesheet" href="Assets/css/styles.css?v=51" />
 
   <!-- Schema.org -->
   <script type="application/ld+json">
@@ -333,47 +333,49 @@
 
     <!-- INVISIBLE COST -->
     <section class="invisible-cost" aria-label="O custo invisível da parada">
-      <video
-        class="invisible-cost__video-bg"
-        src="Assets/Video/magnific_hyperrealistic-cinematic-_2994509248.mp4"
-        muted
-        playsinline
-        preload="auto"
-        aria-hidden="true"
-      ></video>
       <div class="invisible-cost__bg" aria-hidden="true">
         <div class="grid-overlay"></div>
         <div class="scan-line"></div>
       </div>
 
       <div class="container">
-        <div class="invisible-cost__layout">
-          <div class="invisible-cost__text">
-            <h2 class="section-title section-title--light reveal" data-reveal>
-              O problema do nobreak não é quando ele está na parede.
-              <span class="text-accent">É quando a energia cai.</span>
-            </h2>
+        <h2 class="section-title section-title--center section-title--light reveal" data-reveal>
+          O problema do nobreak não é quando ele está na parede.
+          <span class="text-accent">É quando a energia cai.</span>
+        </h2>
 
-            <p class="reveal" data-reveal>
-              A maioria das empresas só descobre que o nobreak falhou no pior momento possível: <strong>durante a queda de energia</strong>. Bateria degradada, capacitor no fim da vida útil, ventilação saturada — nenhum desses sinais avisa sozinho. Eles aparecem de uma vez, e aparecem como prejuízo:
-            </p>
+        <div class="invisible-cost__video-frame reveal" data-reveal>
+          <video
+            class="invisible-cost__video"
+            src="Assets/Video/magnific_hyperrealistic-cinematic-_2994509248.mp4"
+            muted
+            playsinline
+            preload="auto"
+            aria-hidden="true"
+          ></video>
+          <div class="invisible-cost__video-overlay"></div>
+        </div>
 
-            <ul class="risk-list reveal" data-reveal>
-              <li><span aria-hidden="true">▸</span>Produção parada</li>
-              <li><span aria-hidden="true">▸</span>Dados corrompidos</li>
-              <li><span aria-hidden="true">▸</span>Equipamento queimado</li>
-              <li><span aria-hidden="true">▸</span>Atendimento interrompido</li>
-              <li><span aria-hidden="true">▸</span>Cláusula de SLA descumprida</li>
-            </ul>
+        <div class="invisible-cost__copy">
+          <p class="reveal" data-reveal>
+            A maioria das empresas só descobre que o nobreak falhou no pior momento possível: <strong>durante a queda de energia</strong>. Bateria degradada, capacitor no fim da vida útil, ventilação saturada — nenhum desses sinais avisa sozinho. Eles aparecem de uma vez, e aparecem como prejuízo:
+          </p>
 
-            <p class="reveal" data-reveal>
-              A bateria é item de desgaste — é a <strong>causa número um de falha de nobreak em campo</strong>. Ela perde capacidade de forma silenciosa e progressiva. Quando o equipamento finalmente é exigido, ou ele entrega a autonomia que prometia, ou ele só acende um LED enquanto a operação para.
-            </p>
+          <ul class="risk-list reveal" data-reveal>
+            <li><span aria-hidden="true">▸</span>Produção parada</li>
+            <li><span aria-hidden="true">▸</span>Dados corrompidos</li>
+            <li><span aria-hidden="true">▸</span>Equipamento queimado</li>
+            <li><span aria-hidden="true">▸</span>Atendimento interrompido</li>
+            <li><span aria-hidden="true">▸</span>Cláusula de SLA descumprida</li>
+          </ul>
 
-            <blockquote class="quote-block reveal" data-reveal>
-              Um nobreak sem manutenção não é uma proteção. <span>É uma falha agendada.</span>
-            </blockquote>
-          </div>
+          <p class="reveal" data-reveal>
+            A bateria é item de desgaste — é a <strong>causa número um de falha de nobreak em campo</strong>. Ela perde capacidade de forma silenciosa e progressiva. Quando o equipamento finalmente é exigido, ou ele entrega a autonomia que prometia, ou ele só acende um LED enquanto a operação para.
+          </p>
+
+          <blockquote class="quote-block reveal" data-reveal>
+            Um nobreak sem manutenção não é uma proteção. <span>É uma falha agendada.</span>
+          </blockquote>
         </div>
       </div>
     </section>
@@ -1121,6 +1123,6 @@
     </div>
   </div>
 
-  <script src="Assets/js/main.js?v=5" defer></script>
+  <script src="Assets/js/main.js?v=6" defer></script>
 </body>
 </html>
