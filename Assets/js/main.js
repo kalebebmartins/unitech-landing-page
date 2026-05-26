@@ -249,68 +249,24 @@
     });
   });
 
-  // ---------- 11. BACKGROUND VIDEO — play once on enter, freeze on last frame ----------
-  document.querySelectorAll('.invisible-cost__video, .invisible-cost__video-bg').forEach(video => {
-    let hasStarted = false;
-    let isFrozen   = false;
-    const FREEZE_BEFORE_END = 0.08; // seconds before the actual end to pause
-
-    video.loop = false;
-    video.removeAttribute('loop');
+  // ---------- 11. BACKGROUND VIDEO — autoplay loop, pause when offscreen ----------
+  document.querySelectorAll('.invisible-cost__bg-video, .invisible-cost__video, .invisible-cost__video-bg').forEach(video => {
     video.muted = true;
     video.setAttribute('playsinline', '');
     video.controls = false;
 
-    const freezeAtEnd = () => {
-      if (isFrozen) return;
-      isFrozen = true;
-      try {
-        video.pause();
-        if (video.duration && isFinite(video.duration)) {
-          const target = Math.max(0, video.duration - FREEZE_BEFORE_END);
-          video.currentTime = target;
-        }
-      } catch (_) {}
-    };
-
-    // Pause just before the real end so the browser doesn't reset/rewind
-    video.addEventListener('timeupdate', () => {
-      if (isFrozen) return;
-      if (video.duration && video.currentTime >= video.duration - FREEZE_BEFORE_END) {
-        freezeAtEnd();
-      }
-    });
-
-    // Belt-and-suspenders: also catch the actual `ended` event
-    video.addEventListener('ended', freezeAtEnd);
-
-    // Block any future play attempts after the freeze
-    video.addEventListener('play', () => {
-      if (isFrozen) {
-        video.pause();
-        if (video.duration) {
-          video.currentTime = Math.max(0, video.duration - FREEZE_BEFORE_END);
-        }
-      }
-    });
-
     const tryPlay = () => {
-      if (hasStarted) return;
-      hasStarted = true;
       const p = video.play();
-      if (p && p.catch) p.catch(() => { hasStarted = false; });
+      if (p && p.catch) p.catch(() => {});
     };
 
-    // Trigger play only when the section enters viewport (once)
     if ('IntersectionObserver' in window) {
       const vio = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && !hasStarted) {
-            tryPlay();
-            vio.unobserve(entry.target);
-          }
+          if (entry.isIntersecting) tryPlay();
+          else video.pause();
         });
-      }, { threshold: 0.25 });
+      }, { threshold: 0.1 });
       vio.observe(video);
     } else {
       tryPlay();
