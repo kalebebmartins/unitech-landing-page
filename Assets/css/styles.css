@@ -796,19 +796,21 @@ img { max-width: 100%; }
 .lead-form textarea {
   width: 100%;
   padding: 11px 13px;
-  background: var(--ink-50);
+  background-color: var(--ink-50);
+  background-repeat: no-repeat;
+  background-position: right 14px center;
   border: 1.5px solid transparent;
   border-radius: 10px;
   font-size: 14.5px;
   color: var(--ink-900);
-  transition: border-color var(--t-fast), background var(--t-fast), box-shadow var(--t-fast);
+  transition: border-color var(--t-fast), background-color var(--t-fast), box-shadow var(--t-fast);
 }
 .lead-form input:focus,
 .lead-form select:focus,
 .lead-form textarea:focus {
   outline: none;
   border-color: var(--red);
-  background: #fff;
+  background-color: #fff;
   box-shadow: 0 0 0 4px rgba(238,27,36,.1);
 }
 .lead-form select {
@@ -865,7 +867,7 @@ img { max-width: 100%; }
 .lead-form--dark input,
 .lead-form--dark select,
 .lead-form--dark textarea {
-  background: rgba(255,255,255,.06);
+  background-color: rgba(255,255,255,.06);
   color: #fff;
   border-color: rgba(255,255,255,.1);
 }
@@ -873,7 +875,7 @@ img { max-width: 100%; }
 .lead-form--dark input:focus,
 .lead-form--dark select:focus,
 .lead-form--dark textarea:focus {
-  background: rgba(255,255,255,.1);
+  background-color: rgba(255,255,255,.1);
   border-color: var(--red);
   box-shadow: 0 0 0 4px rgba(238,27,36,.2);
 }
