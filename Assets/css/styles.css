@@ -990,9 +990,21 @@ img { max-width: 100%; }
 }
 
 /* Per-logo zoom corrections (some logos have heavy padding/whitespace) */
-.brand-strip__item img[src*="engetron"]     { --zoom: 1.45; transform: scale(var(--zoom)); }
-.brand-strip__item img[src*="Cp eletronica"]{ --zoom: 1.5;  transform: scale(var(--zoom)); }
 .brand-strip__item img[src*="apc-scheneider"] { --zoom: 1.4; transform: scale(var(--zoom)); }
+
+/* Text-only items for brands without logo images yet */
+.brand-strip__item--text {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 24px;
+  letter-spacing: .06em;
+  color: var(--ink-400);
+  text-transform: uppercase;
+  transition: color var(--t-fast), transform var(--t-fast);
+}
+.brand-strip__item--text:hover {
+  color: var(--red);
+}
 
 /* -----------------------------------
    8. BIG NUMBERS
