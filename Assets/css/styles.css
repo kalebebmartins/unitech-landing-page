@@ -991,6 +991,7 @@ img { max-width: 100%; }
 
 /* Per-logo zoom corrections (some logos have heavy padding/whitespace) */
 .brand-strip__item img[src*="apc-scheneider"] { --zoom: 1.4; transform: scale(var(--zoom)); }
+.brand-strip__item img[src*="huawei"] { --zoom: 1.5; transform: scale(var(--zoom)); }
 
 /* Text-only items for brands without logo images yet */
 .brand-strip__item--text {
