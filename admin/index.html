@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#EE1B24" />
-  <title>Admin — Unitech</title>
+  <title>Admin | Unitech</title>
   <link rel="icon" type="image/png" href="/Assets/Logo/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -65,7 +65,7 @@
       </nav>
       <div class="sidebar__bottom">
         <div class="sidebar__user">
-          <strong id="meName">—</strong>
+          <strong id="meName"></strong>
           <span id="meRole">admin</span>
         </div>
         <button class="logout-btn" id="logoutBtn">Sair</button>
@@ -95,7 +95,7 @@
             <button class="btn btn--primary" id="contentSave">Salvar alterações</button>
           </div>
         </header>
-        <p class="tab__hint">Edite os textos chave da LP. As mudanças entram no ar instantaneamente — sem precisar fazer deploy.</p>
+        <p class="tab__hint">Edite os textos chave da LP. As mudanças entram no ar instantaneamente, sem precisar fazer deploy.</p>
         <form class="content-form" id="contentForm">
           <fieldset>
             <legend>Hero</legend>
@@ -116,7 +116,7 @@
             </label>
             <label>
               <span>Endereço</span>
-              <input type="text" name="address" maxlength="160" placeholder="R. Cipriano Barata, 3009 — Ipiranga, São Paulo / SP" />
+              <input type="text" name="address" maxlength="160" placeholder="R. Cipriano Barata, 3009, Ipiranga, São Paulo / SP" />
             </label>
           </fieldset>
           <fieldset>
@@ -142,11 +142,11 @@
         </p>
         <div class="code-pair">
           <label>
-            <span>HEAD <small>— injetado antes do <code>&lt;/head&gt;</code></small></span>
+            <span>HEAD <small>, injetado antes do <code>&lt;/head&gt;</code></small></span>
             <textarea id="scriptsHead" rows="14" spellcheck="false" placeholder="<!-- Google Tag Manager -->&#10;<script>(function(w,d,s,l,i)...)</script>"></textarea>
           </label>
           <label>
-            <span>FOOTER <small>— injetado antes do <code>&lt;/body&gt;</code></small></span>
+            <span>FOOTER <small>, injetado antes do <code>&lt;/body&gt;</code></small></span>
             <textarea id="scriptsFooter" rows="14" spellcheck="false" placeholder="<!-- Meta Pixel -->&#10;<script>!function(f,b,e,v,n,t,s)...</script>"></textarea>
           </label>
         </div>
@@ -190,7 +190,7 @@
             <button class="btn btn--primary" id="userAddBtn">+ Adicionar dev</button>
           </div>
         </header>
-        <p class="tab__hint">Usuários com acesso ao painel. Senhas são salvas com bcrypt (irrecuperáveis — só dá pra resetar criando outra).</p>
+        <p class="tab__hint">Usuários com acesso ao painel. Senhas são salvas com bcrypt (irrecuperáveis, só dá pra resetar criando outra).</p>
         <ul class="users-list" id="usersList"></ul>
 
         <!-- Add user dialog (inline form) -->

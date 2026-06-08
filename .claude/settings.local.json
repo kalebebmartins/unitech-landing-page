@@ -18,7 +18,9 @@
       "Bash(curl -s -X POST https://unitech-landing-page-eta.vercel.app/api/auth/login -H 'Content-Type: application/json' -d '{\"username\":\"28K\",\"password\":\"28K@2026!Design\"}')",
       "Bash(curl -s -o /dev/null -w \"%{size_download}\\\\n\" https://unitech-landing-page-eta.vercel.app/admin/admin.js)",
       "Bash(find /Users/macbookpro/Downloads/ -maxdepth 2 -type f -newer /Users/macbookpro/Downloads/huawei-2.svg \\\\\\( -iname \"*delta*\" -o -iname \"*cm*\" -o -iname \"*comando*\" -o -iname \"*linear*\" \\\\\\) 2>/dev/null | head -10 *)",
-      "Bash(find /Users/macbookpro/Downloads /Users/macbookpro/Desktop /Users/macbookpro/Documents -maxdepth 3 -type f \\\\\\( -iname \"*.png\" -o -iname \"*.jpg\" -o -iname \"*.jpeg\" -o -iname \"*.webp\" -o -iname \"*.svg\" \\\\\\) -newer /Users/macbookpro/Downloads/huawei-2.svg 2>/dev/null | head -30)"
+      "Bash(find /Users/macbookpro/Downloads /Users/macbookpro/Desktop /Users/macbookpro/Documents -maxdepth 3 -type f \\\\\\( -iname \"*.png\" -o -iname \"*.jpg\" -o -iname \"*.jpeg\" -o -iname \"*.webp\" -o -iname \"*.svg\" \\\\\\) -newer /Users/macbookpro/Downloads/huawei-2.svg 2>/dev/null | head -30)",
+      "Bash(python3)",
+      "Bash(git checkout *)"
     ]
   }
 }
