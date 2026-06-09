@@ -239,11 +239,10 @@
     });
   });
 
-  // ---------- 10. WHATSAPP CLICK — força abrir o widget flutuante do RD Station ----------
+  // ---------- 10. TODOS OS CTAs (a.btn) → abrem o widget flutuante do RD Station ----------
   // Procura o iframe/botão do widget e dispara click. Se não achar (widget ainda
-  // carregando), aguarda até 2s. Fallback final: abre wa.me em nova aba.
+  // carregando), aguarda até 1.5s. Fallback: comportamento original do link.
   function findRdWhatsAppEl() {
-    // Possíveis seletores do widget do RD Station Conversas
     const selectors = [
       '.bricks-widget',
       '.bricks-widget-iframe',
@@ -269,10 +268,8 @@
     const el = findRdWhatsAppEl();
     if (!el) return false;
     try {
-      // iframe: dá foco. Botão: click.
       if (el.tagName === 'IFRAME') {
         el.focus();
-        // Tenta clicar no iframe (alguns widgets respondem)
         try { el.contentWindow?.document?.body?.click?.(); } catch (_) {}
       } else {
         el.click();
@@ -281,32 +278,51 @@
     } catch (_) { return false; }
   }
 
-  document.querySelectorAll('a[href*="wa.me"], [data-rd-whatsapp]').forEach(link => {
+  function nativeFallback(link) {
+    // Replica o comportamento original do link
+    const href = link.getAttribute('href') || '';
+    if (href.startsWith('http')) {
+      window.open(href, link.target || '_blank', 'noopener');
+    } else if (href.startsWith('#')) {
+      const target = document.querySelector(href);
+      if (target) {
+        const headerOffset = 80;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    } else if (href) {
+      window.location.href = href;
+    }
+  }
+
+  // Seleciona todos os <a class="btn">, exceto tel: (que liga direto)
+  document.querySelectorAll('a.btn').forEach(link => {
+    const href = link.getAttribute('href') || '';
+    if (href.startsWith('tel:')) return; // ligação telefônica: não intercepta
+
     link.addEventListener('click', (e) => {
       // Tracking
       try {
         window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({ event: 'whatsapp_click', location: window.location.pathname });
+        window.dataLayer.push({
+          event: 'cta_click',
+          cta_text: (link.textContent || '').trim().slice(0, 80),
+          cta_href: href,
+          location: window.location.pathname
+        });
       } catch (_) {}
 
       // Tenta abrir widget RD agora
-      if (openRdWhatsApp()) {
-        e.preventDefault();
-        return;
-      }
-
-      // Widget pode estar carregando — espera até 1.5s antes de cair pro wa.me
       e.preventDefault();
+      if (openRdWhatsApp()) return;
+
+      // Widget pode estar carregando — espera até 1.5s
       const start = Date.now();
       const poll = setInterval(() => {
-        if (openRdWhatsApp()) {
-          clearInterval(poll);
-          return;
-        }
+        if (openRdWhatsApp()) { clearInterval(poll); return; }
         if (Date.now() - start > 1500) {
           clearInterval(poll);
-          // Fallback: abre wa.me em nova aba
-          window.open(link.href, '_blank', 'noopener');
+          nativeFallback(link);
         }
       }, 100);
     });
