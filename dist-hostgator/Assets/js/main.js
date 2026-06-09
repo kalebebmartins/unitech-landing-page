@@ -290,13 +290,18 @@
   }
 
   function findRdWidgetByName() {
+    // 🎯 Seletor EXATO do RD Station floating button (confirmado via DOM)
     return document.querySelector(
+      'button.bricks--floating--button, ' +
+      'button.rdstation-popup-js-floating-button, ' +
+      'button[id^="rd-floating_button-"], ' +
+      'button[aria-label*="WhatsApp" i], ' +
+      'button[aria-label*="Abrir" i], ' +
+      // Fallbacks genéricos
       'bricks-component, [class*="bricks" i], [id*="bricks" i], ' +
       '[class*="rdstation" i], [id*="rdstation" i], ' +
       '[class*="rd-conversas" i], [id*="rd-conversas" i], ' +
-      '[class*="rdsm" i], [id*="rdsm" i], ' +
-      '[class*="whatsapp" i]:not([href]), [class*="conversa" i]:not([href]), ' +
-      'iframe[src*="bricks" i], iframe[src*="rdstation" i], iframe[src*="rd.services" i]'
+      'iframe[src*="bricks" i], iframe[src*="rdstation" i]'
     );
   }
 
