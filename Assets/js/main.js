@@ -239,113 +239,160 @@
     });
   });
 
-  // ---------- 10. TODOS OS CTAs (a.btn) → abrem o widget bricks (RD Station Conversas) ----------
-  // O widget do RD Station Conversas usa o framework "bricks". Renderiza um
-  // custom element <bricks-component> que mostra o botão flutuante.
-  // Para abrir programaticamente: clicar no botão launcher dentro do bricks.
+  // ---------- 10. TODOS OS CTAs (a.btn) → abrem o widget flutuante do RD Station ----------
+  // Estratégia robusta: localizar o botão flutuante em qualquer canto + dispatch
+  // de eventos sintéticos completos (mousedown → mouseup → click).
 
-  function getBricksLauncher() {
-    // 1) Custom element <bricks-component>
-    const brick = document.querySelector('bricks-component, [is="bricks-component"]');
-    if (brick) return brick;
+  let rdWidgetRef = null;
 
-    // 2) Containers comuns do widget
-    const direct = document.querySelector(
-      '#bricks-widget, .bricks-widget, .bricks-launcher, ' +
-      '#rd-conversas, [data-bricks-widget], ' +
-      '.bricks-conversational-widget, .bricks-conversational-widget__chat-button, ' +
-      '.bricks-snippet, .bricks-floating-button'
-    );
-    if (direct) return direct;
-
-    // 3) Iframes do RD
-    const iframe = document.querySelector(
-      'iframe[src*="bricks"], iframe[src*="rdstation"], iframe[src*="rd.services"], ' +
-      'iframe[id^="bricks"], iframe[id*="conversas" i]'
-    );
-    if (iframe) return iframe;
-
-    return null;
+  function isInBottomCorner(rect) {
+    const w = window.innerWidth, h = window.innerHeight;
+    const inBottom = (h - rect.bottom) < 120 || (h - rect.top) < 200;
+    const inLeftOrRight = rect.left < 140 || (w - rect.right) < 140;
+    return inBottom && inLeftOrRight;
   }
 
-  function clickShadowLauncher(host) {
-    // Tenta encontrar e clicar no botão dentro do Shadow DOM do bricks
-    if (!host || !host.shadowRoot) return false;
-    const candidates = host.shadowRoot.querySelectorAll(
-      'button, [role="button"], .launcher, .chat-button, [class*="launcher"], [class*="button"]'
+  function looksLikeChatButton(el) {
+    const s = getComputedStyle(el);
+    if (s.position !== 'fixed') return false;
+    if (s.display === 'none' || s.visibility === 'hidden' || s.opacity === '0') return false;
+    const r = el.getBoundingClientRect();
+    if (r.width < 30 || r.width > 220) return false;
+    if (r.height < 30 || r.height > 220) return false;
+    if (!isInBottomCorner(r)) return false;
+    return true;
+  }
+
+  function scoreWidget(el) {
+    // Maior score = melhor candidato
+    let s = 0;
+    const c = (el.className || '').toString().toLowerCase();
+    const i = (el.id || '').toLowerCase();
+    const all = c + ' ' + i;
+    if (/bricks/.test(all)) s += 50;
+    if (/rdstation|rd-conversas|rdsm/.test(all)) s += 30;
+    if (/whatsapp|chat|conversa/.test(all)) s += 20;
+    if (el.tagName === 'IFRAME') s += 10;
+    if (el.shadowRoot) s += 15;
+    return s;
+  }
+
+  function findRdWidget() {
+    // 1) Conhecidos por classe/id
+    const known = document.querySelector(
+      'bricks-component, [class*="bricks" i], [id*="bricks" i], ' +
+      '[class*="rdstation" i], [id*="rdstation" i], ' +
+      '[class*="rd-conversas" i], [id*="rd-conversas" i], ' +
+      '[class*="rdsm" i], [id*="rdsm" i], ' +
+      'iframe[src*="bricks" i], iframe[src*="rdstation" i], iframe[src*="rd.services" i]'
     );
-    for (const c of candidates) {
-      const style = getComputedStyle(c);
-      if (style.display !== 'none' && style.visibility !== 'hidden') {
-        c.click();
-        return true;
-      }
-    }
-    return false;
+    if (known) return known;
+
+    // 2) Brute force: todos position:fixed em canto, pegando o de maior score
+    const candidates = Array.from(document.querySelectorAll('div, button, a, iframe, [role="button"]'))
+      .filter(looksLikeChatButton);
+    if (candidates.length === 0) return null;
+    candidates.sort((a, b) => scoreWidget(b) - scoreWidget(a));
+    return candidates[0];
+  }
+
+  function fireClick(el) {
+    // Dispara sequência completa (mousedown, mouseup, click) c/ PointerEvent
+    const rect = el.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const opts = { bubbles: true, cancelable: true, view: window, clientX: x, clientY: y, button: 0, buttons: 1 };
+    try { el.dispatchEvent(new PointerEvent('pointerdown', opts)); } catch (_) {}
+    try { el.dispatchEvent(new MouseEvent('mousedown', opts)); } catch (_) {}
+    try { el.dispatchEvent(new PointerEvent('pointerup', { ...opts, buttons: 0 })); } catch (_) {}
+    try { el.dispatchEvent(new MouseEvent('mouseup', { ...opts, buttons: 0 })); } catch (_) {}
+    try { el.dispatchEvent(new MouseEvent('click', { ...opts, buttons: 0 })); } catch (_) {}
+    try { el.click(); } catch (_) {}
   }
 
   function openRdWhatsApp() {
-    // 1) APIs globais que o RD Station pode expor
+    // 1) APIs globais
     try {
-      if (window.RDStationConversas?.open)       { window.RDStationConversas.open(); return true; }
-      if (window.RDStationConversas?.toggle)     { window.RDStationConversas.toggle(); return true; }
-      if (window.rdConversas?.open)              { window.rdConversas.open(); return true; }
-      if (window.bricks?.open)                   { window.bricks.open(); return true; }
-      if (window.RD_CONVERSAS?.open)             { window.RD_CONVERSAS.open(); return true; }
+      if (window.RDStationConversas?.openConversation)   { window.RDStationConversas.openConversation(); return true; }
+      if (window.RDStationConversas?.toggleConversation) { window.RDStationConversas.toggleConversation(); return true; }
+      if (window.RDStationConversas?.open)               { window.RDStationConversas.open(); return true; }
+      if (window._bricks?.openConversation)              { window._bricks.openConversation(); return true; }
+      if (window.bricks?.open)                           { window.bricks.open(); return true; }
     } catch (_) {}
 
-    // 2) Localiza o bricks no DOM
-    const el = getBricksLauncher();
-    if (!el) return false;
+    // 2) Localiza widget (com cache)
+    if (!rdWidgetRef || !document.contains(rdWidgetRef)) {
+      rdWidgetRef = findRdWidget();
+    }
+    if (!rdWidgetRef) return false;
 
     try {
-      // Custom element <bricks-component>: tenta shadow DOM primeiro
-      if (el.tagName && el.tagName.toLowerCase().includes('bricks')) {
-        if (clickShadowLauncher(el)) return true;
-        el.click();
+      // 2a) Shadow DOM — procura botão dentro
+      if (rdWidgetRef.shadowRoot) {
+        const inner = rdWidgetRef.shadowRoot.querySelector(
+          'button, [role="button"], [class*="launcher"], [class*="button"]'
+        );
+        if (inner) { fireClick(inner); return true; }
+      }
+
+      // 2b) Botão interno
+      const innerBtn = rdWidgetRef.querySelector?.('button, [role="button"], a');
+      if (innerBtn && innerBtn !== rdWidgetRef) {
+        fireClick(innerBtn);
         return true;
       }
 
-      // Iframe: postMessage genérico (RD escuta no contentWindow)
-      if (el.tagName === 'IFRAME') {
-        try {
-          el.contentWindow?.postMessage({ type: 'bricks-open' }, '*');
-          el.contentWindow?.postMessage({ type: 'open' }, '*');
-          el.contentWindow?.postMessage({ action: 'open' }, '*');
-        } catch (_) {}
-        el.focus();
+      // 2c) iframe: postMessage + click
+      if (rdWidgetRef.tagName === 'IFRAME') {
+        try { rdWidgetRef.contentWindow?.postMessage({ type: 'bricks-open' }, '*'); } catch (_) {}
+        try { rdWidgetRef.contentWindow?.postMessage({ type: 'open' }, '*'); } catch (_) {}
+        fireClick(rdWidgetRef);
         return true;
       }
 
-      // Container HTML normal
-      el.click();
+      // 2d) Click direto
+      fireClick(rdWidgetRef);
       return true;
-    } catch (_) { return false; }
+    } catch (_) {
+      return false;
+    }
   }
+
+  // Observa o DOM até o widget aparecer (carrega async via GTM/RD)
+  function watchForWidget() {
+    rdWidgetRef = findRdWidget();
+    if (rdWidgetRef) return;
+    const obs = new MutationObserver(() => {
+      rdWidgetRef = findRdWidget();
+      if (rdWidgetRef) obs.disconnect();
+    });
+    obs.observe(document.body, { childList: true, subtree: true });
+    // Para de procurar depois de 30s
+    setTimeout(() => obs.disconnect(), 30000);
+  }
+  watchForWidget();
 
   function nativeFallback(link) {
     const href = link.getAttribute('href') || '';
-    if (href.startsWith('http')) {
-      window.open(href, link.target || '_blank', 'noopener');
-    } else if (href.startsWith('#')) {
+    if (href.startsWith('#')) {
       const target = document.querySelector(href);
       if (target) {
         const headerOffset = 80;
         const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
         window.scrollTo({ top, behavior: 'smooth' });
       }
+    } else if (href.startsWith('http')) {
+      window.open(href, link.target || '_blank', 'noopener');
     } else if (href) {
       window.location.href = href;
     }
   }
 
-  // Seleciona todos os <a class="btn">, exceto tel: (ligação) e o form submit
   document.querySelectorAll('a.btn').forEach(link => {
     const href = link.getAttribute('href') || '';
     if (href.startsWith('tel:')) return;
 
     link.addEventListener('click', (e) => {
-      // Tracking
       try {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -359,11 +406,11 @@
       e.preventDefault();
       if (openRdWhatsApp()) return;
 
-      // Widget pode estar carregando — observa até 2.5s
+      // Widget ainda carregando: espera até 3s
       const start = Date.now();
       const poll = setInterval(() => {
         if (openRdWhatsApp()) { clearInterval(poll); return; }
-        if (Date.now() - start > 2500) {
+        if (Date.now() - start > 3000) {
           clearInterval(poll);
           nativeFallback(link);
         }
