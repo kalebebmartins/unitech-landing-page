@@ -239,47 +239,91 @@
     });
   });
 
-  // ---------- 10. TODOS OS CTAs (a.btn) → abrem o widget flutuante do RD Station ----------
-  // Procura o iframe/botão do widget e dispara click. Se não achar (widget ainda
-  // carregando), aguarda até 1.5s. Fallback: comportamento original do link.
-  function findRdWhatsAppEl() {
-    const selectors = [
-      '.bricks-widget',
-      '.bricks-widget-iframe',
-      'iframe[src*="rdstation"]',
-      'iframe[src*="rdmkt"]',
-      'iframe[src*="rd.services"]',
-      'iframe[id^="rd-"]',
-      '[data-rd-conversas]',
-      '#rd-widget',
-      '.rdsm-floating',
-      '.rd-floating-button',
-      'iframe[title*="WhatsApp" i]',
-      'iframe[title*="conversas" i]'
-    ];
-    for (const s of selectors) {
-      const el = document.querySelector(s);
-      if (el) return el;
-    }
+  // ---------- 10. TODOS OS CTAs (a.btn) → abrem o widget bricks (RD Station Conversas) ----------
+  // O widget do RD Station Conversas usa o framework "bricks". Renderiza um
+  // custom element <bricks-component> que mostra o botão flutuante.
+  // Para abrir programaticamente: clicar no botão launcher dentro do bricks.
+
+  function getBricksLauncher() {
+    // 1) Custom element <bricks-component>
+    const brick = document.querySelector('bricks-component, [is="bricks-component"]');
+    if (brick) return brick;
+
+    // 2) Containers comuns do widget
+    const direct = document.querySelector(
+      '#bricks-widget, .bricks-widget, .bricks-launcher, ' +
+      '#rd-conversas, [data-bricks-widget], ' +
+      '.bricks-conversational-widget, .bricks-conversational-widget__chat-button, ' +
+      '.bricks-snippet, .bricks-floating-button'
+    );
+    if (direct) return direct;
+
+    // 3) Iframes do RD
+    const iframe = document.querySelector(
+      'iframe[src*="bricks"], iframe[src*="rdstation"], iframe[src*="rd.services"], ' +
+      'iframe[id^="bricks"], iframe[id*="conversas" i]'
+    );
+    if (iframe) return iframe;
+
     return null;
   }
 
-  function openRdWhatsApp() {
-    const el = findRdWhatsAppEl();
-    if (!el) return false;
-    try {
-      if (el.tagName === 'IFRAME') {
-        el.focus();
-        try { el.contentWindow?.document?.body?.click?.(); } catch (_) {}
-      } else {
-        el.click();
+  function clickShadowLauncher(host) {
+    // Tenta encontrar e clicar no botão dentro do Shadow DOM do bricks
+    if (!host || !host.shadowRoot) return false;
+    const candidates = host.shadowRoot.querySelectorAll(
+      'button, [role="button"], .launcher, .chat-button, [class*="launcher"], [class*="button"]'
+    );
+    for (const c of candidates) {
+      const style = getComputedStyle(c);
+      if (style.display !== 'none' && style.visibility !== 'hidden') {
+        c.click();
+        return true;
       }
+    }
+    return false;
+  }
+
+  function openRdWhatsApp() {
+    // 1) APIs globais que o RD Station pode expor
+    try {
+      if (window.RDStationConversas?.open)       { window.RDStationConversas.open(); return true; }
+      if (window.RDStationConversas?.toggle)     { window.RDStationConversas.toggle(); return true; }
+      if (window.rdConversas?.open)              { window.rdConversas.open(); return true; }
+      if (window.bricks?.open)                   { window.bricks.open(); return true; }
+      if (window.RD_CONVERSAS?.open)             { window.RD_CONVERSAS.open(); return true; }
+    } catch (_) {}
+
+    // 2) Localiza o bricks no DOM
+    const el = getBricksLauncher();
+    if (!el) return false;
+
+    try {
+      // Custom element <bricks-component>: tenta shadow DOM primeiro
+      if (el.tagName && el.tagName.toLowerCase().includes('bricks')) {
+        if (clickShadowLauncher(el)) return true;
+        el.click();
+        return true;
+      }
+
+      // Iframe: postMessage genérico (RD escuta no contentWindow)
+      if (el.tagName === 'IFRAME') {
+        try {
+          el.contentWindow?.postMessage({ type: 'bricks-open' }, '*');
+          el.contentWindow?.postMessage({ type: 'open' }, '*');
+          el.contentWindow?.postMessage({ action: 'open' }, '*');
+        } catch (_) {}
+        el.focus();
+        return true;
+      }
+
+      // Container HTML normal
+      el.click();
       return true;
     } catch (_) { return false; }
   }
 
   function nativeFallback(link) {
-    // Replica o comportamento original do link
     const href = link.getAttribute('href') || '';
     if (href.startsWith('http')) {
       window.open(href, link.target || '_blank', 'noopener');
@@ -295,10 +339,10 @@
     }
   }
 
-  // Seleciona todos os <a class="btn">, exceto tel: (que liga direto)
+  // Seleciona todos os <a class="btn">, exceto tel: (ligação) e o form submit
   document.querySelectorAll('a.btn').forEach(link => {
     const href = link.getAttribute('href') || '';
-    if (href.startsWith('tel:')) return; // ligação telefônica: não intercepta
+    if (href.startsWith('tel:')) return;
 
     link.addEventListener('click', (e) => {
       // Tracking
@@ -312,15 +356,14 @@
         });
       } catch (_) {}
 
-      // Tenta abrir widget RD agora
       e.preventDefault();
       if (openRdWhatsApp()) return;
 
-      // Widget pode estar carregando — espera até 1.5s
+      // Widget pode estar carregando — observa até 2.5s
       const start = Date.now();
       const poll = setInterval(() => {
         if (openRdWhatsApp()) { clearInterval(poll); return; }
-        if (Date.now() - start > 1500) {
+        if (Date.now() - start > 2500) {
           clearInterval(poll);
           nativeFallback(link);
         }
