@@ -289,60 +289,59 @@
     return null;
   }
 
-  function findRdWidgetByName() {
-    // 🎯 Seletor EXATO do RD Station floating button (confirmado via DOM)
+  function findBricksButton() {
+    // 🎯 Estrutura confirmada do RD Station Bricks:
+    // <div id="bricks-component-{ID}-wrapper">
+    //   <button class="bricks--floating--button rdstation-popup-js-floating-button">
+    // </div>
+    const wrapper = document.querySelector('[id^="bricks-component-"]');
+    if (wrapper) {
+      const btn = wrapper.querySelector(
+        '.bricks--floating--button, ' +
+        '.rdstation-popup-js-floating-button, ' +
+        'button[aria-label*="WhatsApp" i], ' +
+        'button'
+      );
+      if (btn) return btn;
+      return wrapper;
+    }
+    // Standalone (sem wrapper)
     return document.querySelector(
-      'button.bricks--floating--button, ' +
-      'button.rdstation-popup-js-floating-button, ' +
+      '.bricks--floating--button, ' +
+      '.rdstation-popup-js-floating-button, ' +
       'button[id^="rd-floating_button-"], ' +
-      'button[aria-label*="WhatsApp" i], ' +
-      'button[aria-label*="Abrir" i], ' +
-      // Fallbacks genéricos
-      'bricks-component, [class*="bricks" i], [id*="bricks" i], ' +
-      '[class*="rdstation" i], [id*="rdstation" i], ' +
-      '[class*="rd-conversas" i], [id*="rd-conversas" i], ' +
-      'iframe[src*="bricks" i], iframe[src*="rdstation" i]'
+      'button[aria-label*="WhatsApp" i]'
     );
   }
 
   function openRdWhatsApp() {
-    // 1) APIs globais conhecidas do RD
+    // 1) APIs globais
     try {
       if (window.RDStationConversas?.openConversation)   { window.RDStationConversas.openConversation(); return true; }
       if (window.RDStationConversas?.toggleConversation) { window.RDStationConversas.toggleConversation(); return true; }
       if (window.RDStationConversas?.open)               { window.RDStationConversas.open(); return true; }
-      if (window._bricks?.openConversation)              { window._bricks.openConversation(); return true; }
-      if (window.bricks?.open)                           { window.bricks.open(); return true; }
+      if (window.RDStationForms?.openPopup)              { window.RDStationForms.openPopup(); return true; }
+      if (window.RDStationPopups?.open)                  { window.RDStationPopups.open(); return true; }
     } catch (_) {}
 
-    // 2) Localiza por nome de classe/id conhecido
-    let el = findRdWidgetByName();
+    // 2) Botão exato do Bricks
+    const el = findBricksButton();
+    if (!el) {
+      console.warn('[RD] Bricks button não encontrado no DOM');
+      return false;
+    }
 
-    // 3) Se não achou, usa elementFromPoint nos cantos da tela (acha o que estiver
-    //    desenhado visualmente onde o widget aparece)
-    if (!el) el = findWidgetByPoint();
-
-    if (!el) return false;
-
-    // Tenta múltiplas estratégias de click
     try {
-      // a) Shadow DOM (custom elements como bricks-component)
-      if (el.shadowRoot) {
-        const inner = el.shadowRoot.querySelector('button, [role="button"], [class*="launcher"], [class*="button"]');
-        if (inner) fireClick(inner);
-      }
-      // b) Botão interno
-      const innerBtn = el.querySelector?.('button, [role="button"], a, [class*="launcher"], [class*="button"]');
-      if (innerBtn && innerBtn !== el) fireClick(innerBtn);
-      // c) Iframe: postMessage + click
-      if (el.tagName === 'IFRAME') {
-        try { el.contentWindow?.postMessage({ type: 'bricks-open' }, '*'); } catch (_) {}
-        try { el.contentWindow?.postMessage({ type: 'open' }, '*'); } catch (_) {}
-      }
-      // d) Click direto no elemento
+      console.log('[RD] Clicando:', el.tagName, el.id || el.className);
+      // Foco antes do click (alguns popups exigem)
+      try { el.focus({ preventScroll: true }); } catch (_) {}
+      // Click nativo (RD usa onclick padrão, não exige sintético)
+      el.click();
+      // Reforço sintético (caso o RD use pointerdown)
       fireClick(el);
       return true;
-    } catch (_) {
+    } catch (err) {
+      console.error('[RD] Erro ao clicar:', err);
       return false;
     }
   }
