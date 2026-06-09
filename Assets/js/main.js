@@ -239,13 +239,76 @@
     });
   });
 
-  // ---------- 10. WHATSAPP CLICK TRACKING ----------
-  document.querySelectorAll('a[href*="wa.me"]').forEach(link => {
-    link.addEventListener('click', () => {
+  // ---------- 10. WHATSAPP CLICK — força abrir o widget flutuante do RD Station ----------
+  // Procura o iframe/botão do widget e dispara click. Se não achar (widget ainda
+  // carregando), aguarda até 2s. Fallback final: abre wa.me em nova aba.
+  function findRdWhatsAppEl() {
+    // Possíveis seletores do widget do RD Station Conversas
+    const selectors = [
+      '.bricks-widget',
+      '.bricks-widget-iframe',
+      'iframe[src*="rdstation"]',
+      'iframe[src*="rdmkt"]',
+      'iframe[src*="rd.services"]',
+      'iframe[id^="rd-"]',
+      '[data-rd-conversas]',
+      '#rd-widget',
+      '.rdsm-floating',
+      '.rd-floating-button',
+      'iframe[title*="WhatsApp" i]',
+      'iframe[title*="conversas" i]'
+    ];
+    for (const s of selectors) {
+      const el = document.querySelector(s);
+      if (el) return el;
+    }
+    return null;
+  }
+
+  function openRdWhatsApp() {
+    const el = findRdWhatsAppEl();
+    if (!el) return false;
+    try {
+      // iframe: dá foco. Botão: click.
+      if (el.tagName === 'IFRAME') {
+        el.focus();
+        // Tenta clicar no iframe (alguns widgets respondem)
+        try { el.contentWindow?.document?.body?.click?.(); } catch (_) {}
+      } else {
+        el.click();
+      }
+      return true;
+    } catch (_) { return false; }
+  }
+
+  document.querySelectorAll('a[href*="wa.me"], [data-rd-whatsapp]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      // Tracking
       try {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ event: 'whatsapp_click', location: window.location.pathname });
       } catch (_) {}
+
+      // Tenta abrir widget RD agora
+      if (openRdWhatsApp()) {
+        e.preventDefault();
+        return;
+      }
+
+      // Widget pode estar carregando — espera até 1.5s antes de cair pro wa.me
+      e.preventDefault();
+      const start = Date.now();
+      const poll = setInterval(() => {
+        if (openRdWhatsApp()) {
+          clearInterval(poll);
+          return;
+        }
+        if (Date.now() - start > 1500) {
+          clearInterval(poll);
+          // Fallback: abre wa.me em nova aba
+          window.open(link.href, '_blank', 'noopener');
+        }
+      }, 100);
     });
   });
 

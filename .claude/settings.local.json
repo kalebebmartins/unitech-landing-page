@@ -20,7 +20,8 @@
       "Bash(find /Users/macbookpro/Downloads/ -maxdepth 2 -type f -newer /Users/macbookpro/Downloads/huawei-2.svg \\\\\\( -iname \"*delta*\" -o -iname \"*cm*\" -o -iname \"*comando*\" -o -iname \"*linear*\" \\\\\\) 2>/dev/null | head -10 *)",
       "Bash(find /Users/macbookpro/Downloads /Users/macbookpro/Desktop /Users/macbookpro/Documents -maxdepth 3 -type f \\\\\\( -iname \"*.png\" -o -iname \"*.jpg\" -o -iname \"*.jpeg\" -o -iname \"*.webp\" -o -iname \"*.svg\" \\\\\\) -newer /Users/macbookpro/Downloads/huawei-2.svg 2>/dev/null | head -30)",
       "Bash(python3)",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Read(//Users/macbookpro/Downloads/**)"
     ]
   }
 }
