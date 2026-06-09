@@ -239,79 +239,69 @@
     });
   });
 
-  // ---------- 10. TODOS OS CTAs (a.btn) → abrem o widget flutuante do RD Station ----------
-  // Estratégia robusta: localizar o botão flutuante em qualquer canto + dispatch
-  // de eventos sintéticos completos (mousedown → mouseup → click).
+  // ---------- 10. TODOS OS CTAs (a.btn) → FORÇA abrir o widget flutuante do RD Station ----------
+  // Estratégia: clicar AGRESSIVAMENTE em qualquer elemento que pareça ser o widget,
+  // usando elementFromPoint() nos cantos da tela + dispatch de eventos sintéticos
+  // completos. SEM fallback de scroll: a única ação é abrir o widget.
 
-  let rdWidgetRef = null;
-
-  function isInBottomCorner(rect) {
-    const w = window.innerWidth, h = window.innerHeight;
-    const inBottom = (h - rect.bottom) < 120 || (h - rect.top) < 200;
-    const inLeftOrRight = rect.left < 140 || (w - rect.right) < 140;
-    return inBottom && inLeftOrRight;
-  }
-
-  function looksLikeChatButton(el) {
-    const s = getComputedStyle(el);
-    if (s.position !== 'fixed') return false;
-    if (s.display === 'none' || s.visibility === 'hidden' || s.opacity === '0') return false;
-    const r = el.getBoundingClientRect();
-    if (r.width < 30 || r.width > 220) return false;
-    if (r.height < 30 || r.height > 220) return false;
-    if (!isInBottomCorner(r)) return false;
+  function fireClick(el) {
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    const opts = { bubbles: true, cancelable: true, view: window, clientX: x, clientY: y, button: 0 };
+    try { el.dispatchEvent(new PointerEvent('pointerdown', { ...opts, buttons: 1 })); } catch (_) {}
+    try { el.dispatchEvent(new MouseEvent('mousedown',    { ...opts, buttons: 1 })); } catch (_) {}
+    try { el.dispatchEvent(new PointerEvent('pointerup',  { ...opts, buttons: 0 })); } catch (_) {}
+    try { el.dispatchEvent(new MouseEvent('mouseup',      { ...opts, buttons: 0 })); } catch (_) {}
+    try { el.dispatchEvent(new MouseEvent('click',        { ...opts, buttons: 0 })); } catch (_) {}
+    try { el.click(); } catch (_) {}
     return true;
   }
 
-  function scoreWidget(el) {
-    // Maior score = melhor candidato
-    let s = 0;
-    const c = (el.className || '').toString().toLowerCase();
-    const i = (el.id || '').toLowerCase();
-    const all = c + ' ' + i;
-    if (/bricks/.test(all)) s += 50;
-    if (/rdstation|rd-conversas|rdsm/.test(all)) s += 30;
-    if (/whatsapp|chat|conversa/.test(all)) s += 20;
-    if (el.tagName === 'IFRAME') s += 10;
-    if (el.shadowRoot) s += 15;
-    return s;
+  function findWidgetByPoint() {
+    // Sonda múltiplos pontos nos cantos inferiores onde widgets costumam aparecer
+    const w = window.innerWidth, h = window.innerHeight;
+    const points = [];
+    for (let dx = 20; dx <= 100; dx += 20) {
+      for (let dy = 20; dy <= 100; dy += 20) {
+        points.push([w - dx, h - dy]); // bottom-right
+        points.push([dx,     h - dy]); // bottom-left
+      }
+    }
+    const seen = new Set();
+    for (const [x, y] of points) {
+      const el = document.elementFromPoint(x, y);
+      if (!el || seen.has(el)) continue;
+      seen.add(el);
+      const tag = el.tagName;
+      if (tag === 'BODY' || tag === 'HTML') continue;
+      // Anda pra cima até achar um elemento position:fixed (provável container)
+      let node = el;
+      while (node && node !== document.body) {
+        const s = getComputedStyle(node);
+        if (s.position === 'fixed') return node;
+        node = node.parentElement;
+      }
+      // Mesmo sem position:fixed, retorna o elemento se for em iframe
+      if (tag === 'IFRAME') return el;
+    }
+    return null;
   }
 
-  function findRdWidget() {
-    // 1) Conhecidos por classe/id
-    const known = document.querySelector(
+  function findRdWidgetByName() {
+    return document.querySelector(
       'bricks-component, [class*="bricks" i], [id*="bricks" i], ' +
       '[class*="rdstation" i], [id*="rdstation" i], ' +
       '[class*="rd-conversas" i], [id*="rd-conversas" i], ' +
       '[class*="rdsm" i], [id*="rdsm" i], ' +
+      '[class*="whatsapp" i]:not([href]), [class*="conversa" i]:not([href]), ' +
       'iframe[src*="bricks" i], iframe[src*="rdstation" i], iframe[src*="rd.services" i]'
     );
-    if (known) return known;
-
-    // 2) Brute force: todos position:fixed em canto, pegando o de maior score
-    const candidates = Array.from(document.querySelectorAll('div, button, a, iframe, [role="button"]'))
-      .filter(looksLikeChatButton);
-    if (candidates.length === 0) return null;
-    candidates.sort((a, b) => scoreWidget(b) - scoreWidget(a));
-    return candidates[0];
-  }
-
-  function fireClick(el) {
-    // Dispara sequência completa (mousedown, mouseup, click) c/ PointerEvent
-    const rect = el.getBoundingClientRect();
-    const x = rect.left + rect.width / 2;
-    const y = rect.top + rect.height / 2;
-    const opts = { bubbles: true, cancelable: true, view: window, clientX: x, clientY: y, button: 0, buttons: 1 };
-    try { el.dispatchEvent(new PointerEvent('pointerdown', opts)); } catch (_) {}
-    try { el.dispatchEvent(new MouseEvent('mousedown', opts)); } catch (_) {}
-    try { el.dispatchEvent(new PointerEvent('pointerup', { ...opts, buttons: 0 })); } catch (_) {}
-    try { el.dispatchEvent(new MouseEvent('mouseup', { ...opts, buttons: 0 })); } catch (_) {}
-    try { el.dispatchEvent(new MouseEvent('click', { ...opts, buttons: 0 })); } catch (_) {}
-    try { el.click(); } catch (_) {}
   }
 
   function openRdWhatsApp() {
-    // 1) APIs globais
+    // 1) APIs globais conhecidas do RD
     try {
       if (window.RDStationConversas?.openConversation)   { window.RDStationConversas.openConversation(); return true; }
       if (window.RDStationConversas?.toggleConversation) { window.RDStationConversas.toggleConversation(); return true; }
@@ -320,79 +310,47 @@
       if (window.bricks?.open)                           { window.bricks.open(); return true; }
     } catch (_) {}
 
-    // 2) Localiza widget (com cache)
-    if (!rdWidgetRef || !document.contains(rdWidgetRef)) {
-      rdWidgetRef = findRdWidget();
-    }
-    if (!rdWidgetRef) return false;
+    // 2) Localiza por nome de classe/id conhecido
+    let el = findRdWidgetByName();
 
+    // 3) Se não achou, usa elementFromPoint nos cantos da tela (acha o que estiver
+    //    desenhado visualmente onde o widget aparece)
+    if (!el) el = findWidgetByPoint();
+
+    if (!el) return false;
+
+    // Tenta múltiplas estratégias de click
     try {
-      // 2a) Shadow DOM — procura botão dentro
-      if (rdWidgetRef.shadowRoot) {
-        const inner = rdWidgetRef.shadowRoot.querySelector(
-          'button, [role="button"], [class*="launcher"], [class*="button"]'
-        );
-        if (inner) { fireClick(inner); return true; }
+      // a) Shadow DOM (custom elements como bricks-component)
+      if (el.shadowRoot) {
+        const inner = el.shadowRoot.querySelector('button, [role="button"], [class*="launcher"], [class*="button"]');
+        if (inner) fireClick(inner);
       }
-
-      // 2b) Botão interno
-      const innerBtn = rdWidgetRef.querySelector?.('button, [role="button"], a');
-      if (innerBtn && innerBtn !== rdWidgetRef) {
-        fireClick(innerBtn);
-        return true;
+      // b) Botão interno
+      const innerBtn = el.querySelector?.('button, [role="button"], a, [class*="launcher"], [class*="button"]');
+      if (innerBtn && innerBtn !== el) fireClick(innerBtn);
+      // c) Iframe: postMessage + click
+      if (el.tagName === 'IFRAME') {
+        try { el.contentWindow?.postMessage({ type: 'bricks-open' }, '*'); } catch (_) {}
+        try { el.contentWindow?.postMessage({ type: 'open' }, '*'); } catch (_) {}
       }
-
-      // 2c) iframe: postMessage + click
-      if (rdWidgetRef.tagName === 'IFRAME') {
-        try { rdWidgetRef.contentWindow?.postMessage({ type: 'bricks-open' }, '*'); } catch (_) {}
-        try { rdWidgetRef.contentWindow?.postMessage({ type: 'open' }, '*'); } catch (_) {}
-        fireClick(rdWidgetRef);
-        return true;
-      }
-
-      // 2d) Click direto
-      fireClick(rdWidgetRef);
+      // d) Click direto no elemento
+      fireClick(el);
       return true;
     } catch (_) {
       return false;
     }
   }
 
-  // Observa o DOM até o widget aparecer (carrega async via GTM/RD)
-  function watchForWidget() {
-    rdWidgetRef = findRdWidget();
-    if (rdWidgetRef) return;
-    const obs = new MutationObserver(() => {
-      rdWidgetRef = findRdWidget();
-      if (rdWidgetRef) obs.disconnect();
-    });
-    obs.observe(document.body, { childList: true, subtree: true });
-    // Para de procurar depois de 30s
-    setTimeout(() => obs.disconnect(), 30000);
-  }
-  watchForWidget();
-
-  function nativeFallback(link) {
-    const href = link.getAttribute('href') || '';
-    if (href.startsWith('#')) {
-      const target = document.querySelector(href);
-      if (target) {
-        const headerOffset = 80;
-        const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-        window.scrollTo({ top, behavior: 'smooth' });
-      }
-    } else if (href.startsWith('http')) {
-      window.open(href, link.target || '_blank', 'noopener');
-    } else if (href) {
-      window.location.href = href;
-    }
-  }
-
+  // SEM fallback de navegação: o clique DEVE abrir o widget; senão, não faz nada.
   document.querySelectorAll('a.btn').forEach(link => {
     const href = link.getAttribute('href') || '';
     if (href.startsWith('tel:')) return;
 
     link.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       try {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({
@@ -403,19 +361,15 @@
         });
       } catch (_) {}
 
-      e.preventDefault();
+      // Tenta abrir agora. Se falhar, tenta de novo a cada 100ms por 2s.
       if (openRdWhatsApp()) return;
-
-      // Widget ainda carregando: espera até 3s
       const start = Date.now();
       const poll = setInterval(() => {
-        if (openRdWhatsApp()) { clearInterval(poll); return; }
-        if (Date.now() - start > 3000) {
+        if (openRdWhatsApp() || Date.now() - start > 2000) {
           clearInterval(poll);
-          nativeFallback(link);
         }
       }, 100);
-    });
+    }, { capture: true });
   });
 
   // ---------- 11. BACKGROUND VIDEO — autoplay loop, pause when offscreen ----------
